@@ -4,11 +4,13 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.kk.taurus.avplayer"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
         ndk {
             //目前手机主流cpu架构是armeabi-v7a，所以通常情况下只考虑armeabi-v7a(除非特殊情况，比如TBS只有armeabi so库)
             // https://zhuanlan.zhihu.com/p/26833002
@@ -50,6 +52,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    implementation project(':aliyunplayer')
     implementation project(':exoplayer')
     implementation project(':ijkplayer')
     implementation 'com.google.android.material:material:1.0.0'

@@ -3,6 +3,7 @@ package com.kk.taurus.avplayer;
 import android.app.Application;
 import android.os.Environment;
 
+import com.kk.taurus.aliyunplayer.AliyunPlayer;
 import com.kk.taurus.exoplayer.ExoMediaPlayer;
 import com.kk.taurus.ijkplayer.IjkPlayer;
 import com.kk.taurus.playerbase.config.PlayerConfig;
@@ -25,6 +26,7 @@ public class App extends Application {
 
     public static final int PLAN_ID_IJK = 1;
     public static final int PLAN_ID_EXO = 2;
+    public static final int PLAN_ID_ALY = 3;
 
     private static App instance;
 
@@ -70,6 +72,7 @@ public class App extends Application {
 
         PlayerConfig.addDecoderPlan(new DecoderPlan(PLAN_ID_IJK, IjkPlayer.class.getName(), "IjkPlayer"));
         PlayerConfig.addDecoderPlan(new DecoderPlan(PLAN_ID_EXO, ExoMediaPlayer.class.getName(), "ExoPlayer"));
+        PlayerConfig.addDecoderPlan(new DecoderPlan(PLAN_ID_ALY, AliyunPlayer.class.getName(), "AliyunPlayer"));
         PlayerConfig.setDefaultPlanId(PLAN_ID_IJK);
 
         //use default NetworkEventProducer.

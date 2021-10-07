@@ -64,6 +64,10 @@ public class HomeActivity extends AppCompatActivity {
                 PlayerConfig.setDefaultPlanId(App.PLAN_ID_EXO);
                 updateDecoderInfo();
                 break;
+            case R.id.switchAliyunPlayer:
+                PlayerConfig.setDefaultPlanId(App.PLAN_ID_ALY);
+                updateDecoderInfo();
+                break;
             case R.id.inputUrlPlay:
                 intentTo(InputUrlPlayActivity.class);
                 break;
