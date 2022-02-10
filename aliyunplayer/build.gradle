@@ -30,7 +30,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    api "com.aliyun.sdk.android:AliyunPlayer:5.4.2.0-full"
+    api "com.aliyun.sdk.android:AliyunPlayer:5.4.4.1-full"
     api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
 //    api project(':playerbase')
 }

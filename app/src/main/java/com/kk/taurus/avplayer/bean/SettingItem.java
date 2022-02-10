@@ -22,6 +22,7 @@ public class SettingItem {
     public static final int CODE_PLAYER_MEDIA_PLAYER = 400;
     public static final int CODE_PLAYER_IJK_PLAYER = 401;
     public static final int CODE_PLAYER_EXO_PLAYER = 402;
+    public static final int CODE_PLAYER_ALIYUN_PLAYER = 403;
 
     public static final int CODE_SPEED_0_5 = 500;
     public static final int CODE_SPEED_2 = 501;
@@ -82,6 +83,7 @@ public class SettingItem {
         items.add(new SettingItem("使用MediaPlayer",CODE_PLAYER_MEDIA_PLAYER));
         items.add(new SettingItem("使用IjkPlayer",CODE_PLAYER_IJK_PLAYER));
         items.add(new SettingItem("使用ExoPlayer",CODE_PLAYER_EXO_PLAYER));
+        items.add(new SettingItem("使用AliyunPlayer",CODE_PLAYER_ALIYUN_PLAYER));
 
         items.add(new SettingItem("0.5倍速播放",CODE_SPEED_0_5));
         items.add(new SettingItem("2倍速播放",CODE_SPEED_2));

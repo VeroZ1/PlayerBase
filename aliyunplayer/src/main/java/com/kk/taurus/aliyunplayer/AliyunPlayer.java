@@ -31,7 +31,6 @@ import java.util.HashMap;
 /**
  * Created by VeroZ
  */
-
 public class AliyunPlayer extends BaseInternalPlayer {
     private final String TAG = "AliyunPlayer";
 
@@ -80,6 +79,7 @@ public class AliyunPlayer extends BaseInternalPlayer {
             }
             mTargetState = Integer.MAX_VALUE;
             // REMOVED: mAudioSession
+            mMediaPlayer.setOnLoadingStatusListener(mLoadingStatusListener);
             mMediaPlayer.setOnPreparedListener(mPreparedListener);
             mMediaPlayer.setOnRenderingStartListener(mRenderingStartListener);
             mMediaPlayer.setOnStateChangedListener(mStateChangedListener);
@@ -102,20 +102,22 @@ public class AliyunPlayer extends BaseInternalPlayer {
             UrlSource urlSource = new UrlSource();
             if (data != null) {
                 urlSource.setUri(data);
-                if (headers == null)
+                if (headers == null) {
                     mMediaPlayer.setDataSource(urlSource);
-                else {
-                    mMediaPlayer.setDataSource(urlSource/*, headers*/);
+                } else {
+                    setAliyunPlayerHeaders(headers);
+                    mMediaPlayer.setDataSource(urlSource);
                 }
             } else if (uri != null) {
                 urlSource.setUri(uri.getEncodedPath());
-                if (headers == null)
+                if (headers == null) {
                     mMediaPlayer.setDataSource(urlSource);
-                else {
-                    mMediaPlayer.setDataSource(urlSource/*, headers*/);
+                } else {
+                    setAliyunPlayerHeaders(headers);
+                    mMediaPlayer.setDataSource(urlSource);
                 }
             } else if (!TextUtils.isEmpty(assetsPath)) {
-                Log.e(TAG, "aliplayer not support assets play, you can use raw play.");
+                Log.e(TAG, "aliyunplayer not support assets play, you can use raw play.");
             } else if (rawId > 0) {
                 Uri rawUri = DataSource.buildRawPath(mAppContext.getPackageName(), rawId);
                 urlSource.setUri(rawUri.getEncodedPath());
@@ -138,6 +140,55 @@ public class AliyunPlayer extends BaseInternalPlayer {
             mTargetState = STATE_ERROR;
             submitErrorEvent(OnErrorEventListener.ERROR_EVENT_IO, null);
         }
+    }
+
+    // TODO: Optimization method
+    private void setAliyunPlayerHeaders(HashMap<String, String> headers) {
+        com.aliyun.player.nativeclass.PlayerConfig playerConfig = mMediaPlayer.getConfig();
+
+        String referer = headers.get("Referer");
+        headers.remove("Referer");
+        if (referer == null) {
+            referer = headers.get("referer");
+            headers.remove("referer");
+        }
+        if (!TextUtils.isEmpty(referer)) {
+            playerConfig.mReferrer = referer;
+        }
+
+        String userAgent = headers.get("User-Agent");
+        headers.remove("User-Agent");
+        if (userAgent == null) {
+            userAgent = headers.get("user-agent");
+            headers.remove("user-agent");
+        }
+        if (!TextUtils.isEmpty(userAgent)) {
+            playerConfig.mUserAgent = userAgent;
+        }
+
+        String[] aliPlayer = buildAliyunPlayerHeaders(headers);
+        if (aliPlayer != null) {
+            playerConfig.setCustomHeaders(aliPlayer);
+        }
+        mMediaPlayer.setConfig(playerConfig);
+    }
+
+    private String[] buildAliyunPlayerHeaders(HashMap<String, String> headers) {
+        if (headers == null || headers.isEmpty()) {
+            return null;
+        }
+
+        String[] buildedAliyunPlayerHeaders = new String[headers.size()];
+
+        String[] keyArray = headers.keySet().toArray(new String[headers.keySet().size()]);
+
+        for (int i = 0; i < keyArray.length; i++) {
+            String key = keyArray[i];
+            String value = headers.get(key);
+            buildedAliyunPlayerHeaders[i] = key + ": " + value + ";";
+        }
+
+        return buildedAliyunPlayerHeaders;
     }
 
     private boolean available() {
@@ -240,6 +291,7 @@ public class AliyunPlayer extends BaseInternalPlayer {
     @Override
     public void reset() {
         if (available()) {
+            mMediaPlayer.stop();
             mMediaPlayer.reset();
             updateStatus(STATE_IDLE);
             submitPlayerEvent(OnPlayerEventListener.PLAYER_EVENT_ON_RESET, null);
@@ -359,15 +411,13 @@ public class AliyunPlayer extends BaseInternalPlayer {
 
     @Override
     public int getAudioSessionId() {
-        /*if(available()){
-            return mMediaPlayer.getAudioSessionId();
-        }*/
         return 0;
     }
 
     private void resetListener() {
         if (mMediaPlayer == null)
             return;
+        mMediaPlayer.setOnLoadingStatusListener(null);
         mMediaPlayer.setOnPreparedListener(null);
         mMediaPlayer.setOnRenderingStartListener(null);
         mMediaPlayer.setOnStateChangedListener(null);
@@ -377,6 +427,23 @@ public class AliyunPlayer extends BaseInternalPlayer {
         mMediaPlayer.setOnInfoListener(null);
         mMediaPlayer.setOnSeekCompleteListener(null);
     }
+
+    IPlayer.OnLoadingStatusListener mLoadingStatusListener = new IPlayer.OnLoadingStatusListener() {
+        @Override
+        public void onLoadingBegin() {
+            submitPlayerEvent(OnPlayerEventListener.PLAYER_EVENT_ON_BUFFERING_START, null);
+        }
+
+        @Override
+        public void onLoadingProgress(int i, float v) {
+            submitBufferingUpdate(i, null);
+        }
+
+        @Override
+        public void onLoadingEnd() {
+            submitPlayerEvent(OnPlayerEventListener.PLAYER_EVENT_ON_BUFFERING_END, null);
+        }
+    };
 
     IPlayer.OnPreparedListener mPreparedListener = new IPlayer.OnPreparedListener() {
         @Override
@@ -510,14 +577,37 @@ public class AliyunPlayer extends BaseInternalPlayer {
                     mTargetState = STATE_ERROR;
 
                     switch (errorInfo.getCode()) {
+                        case ERROR_NETWORK_UNSUPPORTED:
+                            submitErrorEvent(OnErrorEventListener.ERROR_EVENT_UNSUPPORTED, null);
+                            break;
                         case ERROR_SERVER_NO_RESPONSE:
 //                            release(true);
+                        case ERROR_PLAYAUTH_WRONG:
+                        case ERROR_REQUEST_FAIL:
+                            submitErrorEvent(OnErrorEventListener.ERROR_EVENT_REMOTE, null);
+                            break;
+                        case ERROR_NETWORK_HTTP_403:
+                        case ERROR_NETWORK_HTTP_404:
+                        case ERROR_NETWORK_HTTP_4XX:
+                        case ERROR_NETWORK_HTTP_5XX:
+                        case ERROR_NETWORK_HTTP_400:
+                        case ERROR_DEMUXER_NO_VALID_STREAM:
+                        case ERROR_DEMUXER_OPENSTREAM:
+                        case ERROR_DATASOURCE_EMPTYURL:
+                            submitErrorEvent(OnErrorEventListener.ERROR_EVENT_IO, null);
+                            break;
+                        case ERROR_UNKNOWN_ERROR:
+                        case ERROR_UNKNOWN:
+                            submitErrorEvent(OnErrorEventListener.ERROR_EVENT_UNKNOWN, null);
+                            break;
+                        case ERROR_LOADING_TIMEOUT:
+                        case ERROR_NETWORK_CONNECT_TIMEOUT:
+                            submitErrorEvent(OnErrorEventListener.ERROR_EVENT_TIMED_OUT, null);
+                            break;
+                        default:
+                            submitErrorEvent(OnErrorEventListener.ERROR_EVENT_COMMON, null);
                             break;
                     }
-
-                    /* If an error handler has been supplied, use it and finish. */
-                    Bundle bundle = BundlePool.obtain();
-                    submitErrorEvent(OnErrorEventListener.ERROR_EVENT_COMMON, bundle);
                 }
             };
 
