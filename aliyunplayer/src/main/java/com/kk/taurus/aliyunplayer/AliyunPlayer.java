@@ -105,7 +105,7 @@ public class AliyunPlayer extends BaseInternalPlayer {
                 if (headers == null) {
                     mMediaPlayer.setDataSource(urlSource);
                 } else {
-                    setAliyunPlayerHeaders(headers);
+                    setPlayerHeaders(headers);
                     mMediaPlayer.setDataSource(urlSource);
                 }
             } else if (uri != null) {
@@ -113,7 +113,7 @@ public class AliyunPlayer extends BaseInternalPlayer {
                 if (headers == null) {
                     mMediaPlayer.setDataSource(urlSource);
                 } else {
-                    setAliyunPlayerHeaders(headers);
+                    setPlayerHeaders(headers);
                     mMediaPlayer.setDataSource(urlSource);
                 }
             } else if (!TextUtils.isEmpty(assetsPath)) {
@@ -143,7 +143,7 @@ public class AliyunPlayer extends BaseInternalPlayer {
     }
 
     // TODO: Optimization method
-    private void setAliyunPlayerHeaders(HashMap<String, String> headers) {
+    private void setPlayerHeaders(HashMap<String, String> headers) {
         com.aliyun.player.nativeclass.PlayerConfig playerConfig = mMediaPlayer.getConfig();
 
         String referer = headers.get("Referer");
@@ -166,29 +166,29 @@ public class AliyunPlayer extends BaseInternalPlayer {
             playerConfig.mUserAgent = userAgent;
         }
 
-        String[] aliPlayer = buildAliyunPlayerHeaders(headers);
-        if (aliPlayer != null) {
-            playerConfig.setCustomHeaders(aliPlayer);
+        String[] playerHeaders = assemblePlayerHeaders(headers);
+        if (playerHeaders != null) {
+            playerConfig.setCustomHeaders(playerHeaders);
         }
         mMediaPlayer.setConfig(playerConfig);
     }
 
-    private String[] buildAliyunPlayerHeaders(HashMap<String, String> headers) {
+    private String[] assemblePlayerHeaders(HashMap<String, String> headers) {
         if (headers == null || headers.isEmpty()) {
             return null;
         }
 
-        String[] buildedAliyunPlayerHeaders = new String[headers.size()];
+        String[] assembledPlayerHeaders = new String[headers.size()];
 
-        String[] keyArray = headers.keySet().toArray(new String[headers.keySet().size()]);
+        String[] keyArray = headers.keySet().toArray(new String[0]);
 
         for (int i = 0; i < keyArray.length; i++) {
             String key = keyArray[i];
             String value = headers.get(key);
-            buildedAliyunPlayerHeaders[i] = key + ": " + value + ";";
+            assembledPlayerHeaders[i] = key + ":" + value;
         }
 
-        return buildedAliyunPlayerHeaders;
+        return assembledPlayerHeaders;
     }
 
     private boolean available() {
@@ -392,7 +392,7 @@ public class AliyunPlayer extends BaseInternalPlayer {
     @Override
     public void setVolume(float leftVolume, float rightVolume) {
         if (available()) {
-            mMediaPlayer.setVolume(leftVolume);
+            mMediaPlayer.setVolume((leftVolume + rightVolume) / 2);
         }
     }
 
@@ -539,7 +539,7 @@ public class AliyunPlayer extends BaseInternalPlayer {
                         case BufferedPosition:
                             PLog.d(TAG, "BufferedPosition:");
                             long mVideoBufferedPosition = infoBean.getExtraValue();
-                            submitBufferingUpdate((int) mVideoBufferedPosition, null);
+                            submitBufferingUpdate((int) ((float) mVideoBufferedPosition / getDuration() * 100f), null);
                             break;
                         case CurrentPosition:
                             PLog.d(TAG, "CurrentPosition:");
@@ -605,7 +605,9 @@ public class AliyunPlayer extends BaseInternalPlayer {
                             submitErrorEvent(OnErrorEventListener.ERROR_EVENT_TIMED_OUT, null);
                             break;
                         default:
-                            submitErrorEvent(OnErrorEventListener.ERROR_EVENT_COMMON, null);
+                            /* If an error handler has been supplied, use it and finish. */
+                            Bundle bundle = BundlePool.obtain();
+                            submitErrorEvent(OnErrorEventListener.ERROR_EVENT_COMMON, bundle);
                             break;
                     }
                 }

@@ -1,1 +1,1 @@
-include ':app', ':playerbase', ':ijkplayer', ':exoplayer', ':aliyunplayer'
+include ':app', ':playerbase', ':ijkplayer', ':exoplayer', ':aliyunplayer', 'txplayer'

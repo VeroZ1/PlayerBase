@@ -220,6 +220,11 @@ public class BaseVideoViewActivity extends AppCompatActivity implements
                     replay();
                 }
                 break;
+            case SettingItem.CODE_PLAYER_TX_PLAYER:
+                if(mVideoView.switchDecoder(App.PLAN_ID_TX)){
+                    replay();
+                }
+                break;
             case SettingItem.CODE_SPEED_0_5:
                 mVideoView.setSpeed(0.5f);
                 break;
