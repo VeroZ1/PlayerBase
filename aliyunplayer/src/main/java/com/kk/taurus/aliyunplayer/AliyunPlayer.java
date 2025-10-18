@@ -145,6 +145,8 @@ public class AliyunPlayer extends BaseInternalPlayer {
     // TODO: Optimization method
     private void setPlayerHeaders(HashMap<String, String> headers) {
         com.aliyun.player.nativeclass.PlayerConfig playerConfig = mMediaPlayer.getConfig();
+        // 默认重试次数为2次，手动设置重试次数为0次
+        playerConfig.mNetworkRetryCount = 0;
 
         String referer = headers.get("Referer");
         headers.remove("Referer");
@@ -270,6 +272,13 @@ public class AliyunPlayer extends BaseInternalPlayer {
             Bundle bundle = BundlePool.obtain();
             bundle.putInt(EventKey.INT_DATA, msc);
             submitPlayerEvent(OnPlayerEventListener.PLAYER_EVENT_ON_SEEK_TO, bundle);
+        } else {
+            // May be unable to seekTo during prepare, call SeekTo after prepared
+            if (available()) {
+                if (msc > 0) {
+                    startSeekPos = msc;
+                }
+            }
         }
     }
 
