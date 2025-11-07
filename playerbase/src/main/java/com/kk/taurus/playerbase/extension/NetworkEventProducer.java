@@ -106,6 +106,7 @@ public class NetworkEventProducer extends BaseEventProducer {
         destroy();
     }
 
+    @Override
     public void destroy(){
         if(mBroadcastReceiver !=null)
             mBroadcastReceiver.destroy();
