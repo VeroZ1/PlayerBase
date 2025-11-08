@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-//apply from: 'bintray.gradle'
+apply from: 'publish.gradle'
 
 android {
     compileSdkVersion 29
@@ -30,7 +30,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    api "com.aliyun.sdk.android:AliyunPlayer:5.4.6.0-full"
-    api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
-//    api project(':playerbase')
+    api "com.aliyun.sdk.android:AliyunPlayer:$aliyunSdkVersion"
+    //api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
+    api project(':playerbase')
 }
