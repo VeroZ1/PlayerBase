@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply from: 'publish.gradle'
 
 android {
     compileSdkVersion 29
@@ -16,13 +15,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        compileOptions{
+        compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
         }
     }
 
-    lintOptions{
+    lintOptions {
         abortOnError false
     }
 
@@ -38,3 +37,12 @@ dependencies {
     //api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
     api project(':playerbase')
 }
+
+ext {
+    PUBLISH_ARTIFACT_ID = 'exoplayer'
+    PUBLISH_VERSION = rootProject.ext.playerbaseExoVersion
+    PUBLISH_NAME = 'ExoPlayer'
+    PUBLISH_DESCRIPTION = 'Packaging exoplayer by PlayerBase'
+}
+
+apply from: '../publish.gradle'

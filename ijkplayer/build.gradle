@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply from: 'publish.gradle'
 
 android {
     compileSdkVersion 29
@@ -34,3 +33,12 @@ dependencies {
     //api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
     api project(':playerbase')
 }
+
+ext {
+    PUBLISH_ARTIFACT_ID = 'ijkplayer'
+    PUBLISH_VERSION = rootProject.ext.playerbaseIjkVersion
+    PUBLISH_NAME = 'IjkPlayer'
+    PUBLISH_DESCRIPTION = 'Packaging ijkplayer by PlayerBase'
+}
+
+apply from: '../publish.gradle'

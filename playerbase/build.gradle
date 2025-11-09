@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply from: 'publish.gradle'
 
 android {
     compileSdkVersion 29
@@ -41,3 +40,12 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
 
 }
+
+ext {
+    PUBLISH_ARTIFACT_ID = 'playerbase'
+    PUBLISH_VERSION = rootProject.ext.playerbaseVersion
+    PUBLISH_NAME = 'PlayerBase'
+    PUBLISH_DESCRIPTION = 'A base player widget library'
+}
+
+apply from: '../publish.gradle'
