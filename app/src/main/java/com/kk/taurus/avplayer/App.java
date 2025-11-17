@@ -13,7 +13,6 @@ import com.kk.taurus.playerbase.log.PLog;
 import com.kk.taurus.playerbase.record.PlayRecordManager;
 import com.kk.taurus.txplayer.TxLicenseUtil;
 import com.kk.taurus.txplayer.TxPlayer;
-import com.squareup.leakcanary.LeakCanary;
 import com.xapp.jjh.logtools.config.XLogConfig;
 import com.xapp.jjh.logtools.logger.LogLevel;
 import com.xapp.jjh.logtools.tools.XLog;
@@ -35,7 +34,7 @@ public class App extends Application {
 
     public static boolean ignoreMobile;
 
-    public static App get(){
+    public static App get() {
         return instance;
     }
 
@@ -45,19 +44,12 @@ public class App extends Application {
         instance = this;
         PLog.LOG_OPEN = true;
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
-
         XLog.init(getApplicationContext(),
                 new XLogConfig()
                         //loglevel FULL为显示log ，NONE为不显示log
                         .setLogLevel(LogLevel.FULL)
                         //文件日志以及崩溃日志文件的目录
-                        .setLogDir(new File(Environment.getExternalStorageDirectory(),"TestXLog"))
+                        .setLogDir(new File(Environment.getExternalStorageDirectory(), "TestXLog"))
                         //崩溃日志文件标记名称
                         .setCrashLogTag("CrashLogTag")
                         //是否云保存文件日志（非crash日志）
