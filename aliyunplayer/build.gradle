@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply from: 'publish.gradle'
 
 android {
     compileSdkVersion 29
@@ -16,12 +15,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        compileOptions{
+        compileOptions {
 
         }
     }
 
-    lintOptions{
+    lintOptions {
         abortOnError false
     }
 
@@ -34,3 +33,12 @@ dependencies {
     //api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
     api project(':playerbase')
 }
+
+ext {
+    PUBLISH_ARTIFACT_ID = 'aliyunplayer'
+    PUBLISH_VERSION = rootProject.ext.playerbaseAlyVersion
+    PUBLISH_NAME = 'AliyunPlayer'
+    PUBLISH_DESCRIPTION = 'Packaging aliyunplayer by PlayerBase'
+}
+
+apply from: '../publish.gradle'

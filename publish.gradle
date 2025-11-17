@@ -1,0 +1,58 @@
+apply plugin: 'maven-publish'
+
+tasks.register('androidSourcesJar', Jar) {
+    from android.sourceSets.main.java.source
+    archiveClassifier = 'sources'
+}
+
+ext {
+    PUBLISH_GROUP_ID = 'com.kk.taurus.playerbase'
+    //PUBLISH_VERSION = rootProject.ext.playerbaseVersion
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // The coordinates of the library, being set from variables that
+                // we'll set up in a moment
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+
+                // Two artifacts, the `aar` and the sources
+                from components.release
+                artifact androidSourcesJar
+
+                // Self-explanatory metadata for the most part
+                pom {
+                    name = PUBLISH_NAME
+                    description = PUBLISH_DESCRIPTION
+                    // If your project has a dedicated site, use its URL here
+                    url = 'https://github.com/jiajunhui/PlayerBase'
+                    // Set your license
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'junhuijia'
+                            name = 'junhui jia'
+                            email = 'jiajunhuiplay@gmail.com'
+                        }
+                    }
+
+                    // Version control info, if you're using GitHub, follow the format as seen here
+                    scm {
+                        connection = 'scm:git:github.com/jiajunhui/PlayerBase.git'
+                        developerConnection = 'scm:git:ssh://github.com/jiajunhui/PlayerBase.git'
+                        url = 'https://github.com/jiajunhui/PlayerBase/tree/master'
+                    }
+                }
+            }
+        }
+    }
+}
