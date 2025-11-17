@@ -10,21 +10,18 @@ import com.kk.taurus.avplayer.R;
 import com.kk.taurus.avplayer.play.ShareAnimationPlayer;
 import com.kk.taurus.playerbase.entity.DataSource;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ShareAnimationActivityB extends AppCompatActivity {
 
     public static final String KEY_DATA = "data_source";
 
-    @BindView(R.id.top_container)
-    RelativeLayout mTopContainer;
+    private RelativeLayout mTopContainer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_animation_b);
-        ButterKnife.bind(this);
+
+        mTopContainer = findViewById(R.id.top_container);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 

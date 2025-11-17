@@ -23,25 +23,13 @@ import com.kk.taurus.avplayer.utils.ImageDisplayEngine;
 import com.kk.taurus.playerbase.entity.DataSource;
 import com.kk.taurus.playerbase.receiver.ReceiverGroup;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+public class ShareAnimationActivityA extends AppCompatActivity implements View.OnClickListener {
 
-public class ShareAnimationActivityA extends AppCompatActivity {
-
-    @BindView(R.id.albumImage)
-    ImageView mAlbumImage;
-    @BindView(R.id.playIcon)
-    ImageView playIcon;
-    @BindView(R.id.album_layout)
-    RelativeLayout mAlbumLayout;
-    @BindView(R.id.layoutContainer)
-    FrameLayout mLayoutContainer;
-    @BindView(R.id.tv_title)
-    TextView mTvTitle;
-
-    private Unbinder unbinder;
+    private ImageView mAlbumImage;
+    private ImageView playIcon;
+    private RelativeLayout mAlbumLayout;
+    private FrameLayout mLayoutContainer;
+    private TextView mTvTitle;
 
     private DataSource mData;
 
@@ -52,7 +40,15 @@ public class ShareAnimationActivityA extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_animation_a);
-        unbinder = ButterKnife.bind(this);
+
+        mAlbumImage = findViewById(R.id.albumImage);
+        playIcon = findViewById(R.id.playIcon);
+        mAlbumLayout = findViewById(R.id.album_layout);
+        mLayoutContainer = findViewById(R.id.layoutContainer);
+        mTvTitle = findViewById(R.id.tv_title);
+
+        mAlbumLayout.setOnClickListener(this);
+        mTvTitle.setOnClickListener(this);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -71,10 +67,10 @@ public class ShareAnimationActivityA extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.album_layout, R.id.tv_title})
-    public void onViewClicked(View view) {
+    @Override
+    public void onClick(View v) {
         ShareAnimationPlayer.get().setReceiverGroup(mReceiverGroup);
-        switch (view.getId()) {
+        switch (v.getId()) {
             case R.id.album_layout:
                 playIcon.setVisibility(View.GONE);
                 ShareAnimationPlayer.get().play(mLayoutContainer, mData);
@@ -118,6 +114,5 @@ public class ShareAnimationActivityA extends AppCompatActivity {
 
         ShareAnimationPlayer.get().destroy();
 
-        unbinder.unbind();
     }
 }

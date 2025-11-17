@@ -29,39 +29,24 @@ import com.kk.taurus.playerbase.touch.OnTouchGestureListener;
 import com.kk.taurus.playerbase.receiver.BaseCover;
 import com.kk.taurus.playerbase.utils.TimeUtil;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
 /**
  * Created by Taurus on 2018/4/15.
  */
 
-public class ControllerCover extends BaseCover implements OnTimerUpdateListener, OnTouchGestureListener{
+public class ControllerCover extends BaseCover implements OnTimerUpdateListener, OnTouchGestureListener, View.OnClickListener{
 
     private final int MSG_CODE_DELAY_HIDDEN_CONTROLLER = 101;
 
-    @BindView(R.id.cover_player_controller_top_container)
-    View mTopContainer;
-    @BindView(R.id.cover_player_controller_bottom_container)
-    View mBottomContainer;
-    @BindView(R.id.cover_player_controller_image_view_back_icon)
-    ImageView mBackIcon;
-    @BindView(R.id.cover_player_controller_text_view_video_title)
-    TextView mTopTitle;
-    @BindView(R.id.cover_player_controller_image_view_play_state)
-    ImageView mStateIcon;
-    @BindView(R.id.cover_player_controller_text_view_curr_time)
-    TextView mCurrTime;
-    @BindView(R.id.cover_player_controller_text_view_total_time)
-    TextView mTotalTime;
-    @BindView(R.id.cover_player_controller_image_view_switch_screen)
-    ImageView mSwitchScreen;
-    @BindView(R.id.cover_player_controller_seek_bar)
-    SeekBar mSeekBar;
-    @BindView(R.id.cover_bottom_seek_bar)
-    SeekBar mBottomSeekBar;
+    private View mTopContainer;
+    private View mBottomContainer;
+    private ImageView mBackIcon;
+    private TextView mTopTitle;
+    private ImageView mStateIcon;
+    private TextView mCurrTime;
+    private TextView mTotalTime;
+    private ImageView mSwitchScreen;
+    private SeekBar mSeekBar;
+    private SeekBar mBottomSeekBar;
 
     private int mBufferPercentage;
 
@@ -87,7 +72,6 @@ public class ControllerCover extends BaseCover implements OnTimerUpdateListener,
     private String mTimeFormat;
 
     private boolean mControllerTopEnable;
-    private Unbinder unbinder;
     private ObjectAnimator mBottomAnimator;
     private ObjectAnimator mTopAnimator;
 
@@ -98,7 +82,21 @@ public class ControllerCover extends BaseCover implements OnTimerUpdateListener,
     @Override
     public void onReceiverBind() {
         super.onReceiverBind();
-        unbinder = ButterKnife.bind(this, getView());
+
+        mTopContainer = getView().findViewById(R.id.cover_player_controller_top_container);
+        mBottomContainer = getView().findViewById(R.id.cover_player_controller_bottom_container);
+        mBackIcon = getView().findViewById(R.id.cover_player_controller_image_view_back_icon);
+        mTopTitle = getView().findViewById(R.id.cover_player_controller_text_view_video_title);
+        mStateIcon = getView().findViewById(R.id.cover_player_controller_image_view_play_state);
+        mCurrTime = getView().findViewById(R.id.cover_player_controller_text_view_curr_time);
+        mTotalTime = getView().findViewById(R.id.cover_player_controller_text_view_total_time);
+        mSwitchScreen = getView().findViewById(R.id.cover_player_controller_image_view_switch_screen);
+        mSeekBar = getView().findViewById(R.id.cover_player_controller_seek_bar);
+        mBottomSeekBar = getView().findViewById(R.id.cover_bottom_seek_bar);
+
+        mBackIcon.setOnClickListener(this);
+        mStateIcon.setOnClickListener(this);
+        mSwitchScreen.setOnClickListener(this);
 
         mSeekBar.setOnSeekBarChangeListener(onSeekBarChangeListener);
 
@@ -141,16 +139,11 @@ public class ControllerCover extends BaseCover implements OnTimerUpdateListener,
         removeDelayHiddenMessage();
         mHandler.removeCallbacks(mSeekEventRunnable);
 
-        unbinder.unbind();
-
     }
 
-    @OnClick({
-            R.id.cover_player_controller_image_view_back_icon,
-            R.id.cover_player_controller_image_view_play_state,
-            R.id.cover_player_controller_image_view_switch_screen})
-    public void onViewClick(View view){
-        switch (view.getId()){
+    @Override
+    public void onClick(View v){
+        switch (v.getId()){
             case R.id.cover_player_controller_image_view_back_icon:
                 notifyReceiverEvent(DataInter.Event.EVENT_CODE_REQUEST_BACK, null);
                 break;

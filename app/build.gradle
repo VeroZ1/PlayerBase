@@ -51,10 +51,8 @@ dependencies {
     implementation 'com.jiajunhui.xapp.medialoader:medialoader:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.lovedise:permissiongen:0.0.6'
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     implementation project(':txplayer')
     implementation project(':aliyunplayer')

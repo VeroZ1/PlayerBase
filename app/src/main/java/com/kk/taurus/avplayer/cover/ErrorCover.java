@@ -15,11 +15,6 @@ import com.kk.taurus.playerbase.event.OnPlayerEventListener;
 import com.kk.taurus.playerbase.receiver.BaseCover;
 import com.kk.taurus.playerbase.utils.NetworkUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
 /**
  * Created by Taurus on 2018/4/20.
  */
@@ -33,16 +28,12 @@ public class ErrorCover extends BaseCover {
 
     int mStatus = STATUS_UNDEFINE;
 
-    @BindView(R.id.tv_error_info)
-    TextView mInfo;
-    @BindView(R.id.tv_retry)
-    TextView mRetry;
+    private TextView mInfo;
+    private TextView mRetry;
 
     private boolean mErrorShow;
 
     private int mCurrPosition;
-
-    private Unbinder unbinder;
 
     public ErrorCover(Context context) {
         super(context);
@@ -52,9 +43,15 @@ public class ErrorCover extends BaseCover {
     public void onReceiverBind() {
         super.onReceiverBind();
 
-        unbinder = ButterKnife.bind(this, getView());
+        mInfo = getView().findViewById(R.id.tv_error_info);
+        mRetry = getView().findViewById(R.id.tv_retry);
 
-
+        mRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleStatus();
+            }
+        });
     }
 
     @Override
@@ -66,16 +63,6 @@ public class ErrorCover extends BaseCover {
     @Override
     public void onReceiverUnBind() {
         super.onReceiverUnBind();
-        unbinder.unbind();
-    }
-
-    @OnClick({R.id.tv_retry})
-    public void onViewClick(View view){
-        switch (view.getId()){
-            case R.id.tv_retry:
-                handleStatus();
-                break;
-        }
     }
 
     private void handleStatus(){
