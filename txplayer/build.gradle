@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-//apply from: 'bintray.gradle'
+//apply from: 'publish.gradle'
 
 android {
     compileSdkVersion 29
@@ -30,7 +30,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    api "com.tencent.liteav:LiteAVSDK_Player:10.9.0.13102"
-    api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
-//    api project(':playerbase')
+    api "com.tencent.liteav:LiteAVSDK_Player:$txSdkVersion"
+    //api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
+    api project(':playerbase')
 }

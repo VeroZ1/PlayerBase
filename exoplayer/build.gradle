@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-//apply from: 'bintray.gradle'
+apply from: 'publish.gradle'
 
 android {
     compileSdkVersion 29
@@ -35,6 +35,6 @@ dependencies {
     api "com.google.android.exoplayer:exoplayer-dash:$exoplayersdkVersion"
     api "com.google.android.exoplayer:exoplayer-hls:$exoplayersdkVersion"
     api "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayersdkVersion"
-    api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
-//    api project(':playerbase')
+    //api "com.kk.taurus.playerbase:playerbase:$playerbaseVersion"
+    api project(':playerbase')
 }
