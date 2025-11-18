@@ -12,7 +12,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -36,10 +36,13 @@ dependencies {
 }
 
 ext {
+    PUBLISH_ENABLED = false
     PUBLISH_ARTIFACT_ID = 'txplayer'
     PUBLISH_VERSION = rootProject.ext.playerbaseTxVersion
     PUBLISH_NAME = 'TxPlayer'
     PUBLISH_DESCRIPTION = 'Packaging txplayer by PlayerBase'
 }
 
-//apply from: '../publish.gradle'
+/*apply plugin: 'com.vanniktech.maven.publish'
+
+version = PUBLISH_VERSION*/

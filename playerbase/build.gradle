@@ -12,7 +12,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -42,10 +42,13 @@ dependencies {
 }
 
 ext {
+    PUBLISH_ENABLED = true
     PUBLISH_ARTIFACT_ID = 'playerbase'
     PUBLISH_VERSION = rootProject.ext.playerbaseVersion
     PUBLISH_NAME = 'PlayerBase'
     PUBLISH_DESCRIPTION = 'A base player widget library'
 }
 
-apply from: '../publish.gradle'
+/*apply plugin: 'com.vanniktech.maven.publish'
+
+version = PUBLISH_VERSION*/
